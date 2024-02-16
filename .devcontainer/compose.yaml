@@ -1,0 +1,41 @@
+# This is the Docker Compose file used with Visual Studio Code.
+# For details, refer to: 
+#   - https://docs.docker.com/compose/compose-file/
+#   - https://github.com/microsoft/vscode-dev-containers/tree/main/container-templates/docker-compose/.devcontainer
+
+## Other ###############################################################################################################
+version: '3.9'
+
+## Services ############################################################################################################
+services:
+  vscode:
+    # The 'vscode' service is built from the Dockerfile.
+    image: dmg00345/python_signal_edges:latest
+    container_name: python_signal_edges
+    build:
+      context: ..
+      # The path to the DockerFile, relative to the root folder of the workspace.
+      dockerfile: .devcontainer/DockerFile
+
+    volumes:
+      # Map the volume repository to the workspace, this is 'workspaceFolder' in 'devcontainer.json' file.
+      # Set the consistency to 'cached' as that is more suitable for development (high I/O frequency).
+      - vscode:/workspace:cached
+
+    env_file:
+      # Github environment variables such as username and email.
+      - ../../!local/other-files/github/github.env
+
+    # Override default command to an infinite loop, this causes things not to shut down when the process ends.
+    command: /bin/sh -c "while sleep 1000; do :; done"
+
+## Volumes #############################################################################################################
+volumes:
+  # Volume with the repository contents.
+  vscode:
+
+## Configs #############################################################################################################
+
+## Secrets #############################################################################################################
+
+## Networks ############################################################################################################

@@ -1,0 +1,450 @@
+[build-system]
+requires = ["poetry-core==1.4.0"]
+build-backend = "poetry.core.masonry.api"
+
+## Poetry ##############################################################################################################
+# For details about 'tool.poetry' section, refer to:
+#   https://python-poetry.org/docs/pyproject/
+
+[tool.poetry]
+name = "python-signal-edges"
+version = "1.0.0"
+description = "Extract state levels and edges from signals, among others"
+license = "MIT"
+authors = ["Diego Martinez <dmg0345@gmail.com>"]
+readme = "readme.rst"
+homepage = "https://github.com/dmg0345/python-signal-edges"
+repository = "https://github.com/dmg0345/python-signal-edges"
+documentation = "https://dmg0345-python-signal-edges.netlify.app/"
+keywords = [
+    "python",
+    "signal",
+    "edges",
+    "automation",
+    "hardware",
+    "pwm",
+    "acquisition",
+]
+packages = [{ include = "src" }, { include = "signal_edges", from = "src" }]
+
+[tool.poetry.dependencies]
+python = ">=3.10"
+numpy = ">=1.26.0"
+scipy = ">=1.12.0"
+matplotlib = ">=3.8.2"
+
+[tool.poetry.group.dev.dependencies]
+pylint = "2.17.4"
+ipykernel = "6.23.3"
+black = "23.3.0"
+doc8 = "0.11.2"
+tomli = "2.0.1"
+isort = "5.12.0"
+pytest = "7.4.0"
+pytest-mock = "3.11.1"
+pytest-sugar = "0.9.7"
+pytest-cov = "4.1.0"
+pytest-randomly = "3.12.0"
+pytest-check = "2.1.5"
+pytest-html = "4.0.2"
+sphinx = "7.2.6"
+sphinx-toolbox = "3.5.0"
+sphinx-autodoc-typehints = "1.24.0"
+sphinx-autobuild = "2021.3.14"
+sphinx-rtd-theme = "1.3.0"
+esbonio = "0.16.1"
+pygments = "2.16.1"
+nodeenv = "1.8.0"
+line_profiler = "4.1.2"
+
+## Pylint ##############################################################################################################
+# For details about 'tool.pylint' section, refer to:
+#   https://pylint.pycqa.org/en/latest/user_guide/configuration/all-options.html
+
+[tool.pylint.main]
+init-hook = "import sys; sys.path.append('src'); sys.path.append('tests');"
+analyse-fallback-blocks = false
+confidence = [
+    "HIGH",
+    "CONTROL_FLOW",
+    "INFERENCE",
+    "INFERENCE_FAILURE",
+    "UNDEFINED",
+]
+disable = [
+    "missing-return-type-doc",
+    "missing-yield-type-doc",
+    "logging-fstring-interpolation",
+    "too-many-try-statements",
+    "duplicate-code",
+    "compare-to-zero",
+]
+enable = []
+evaluation = "max(0, 0 if fatal else 10.0 - ((float(5 * error + warning + refactor + convention) / statement) * 10))"
+exit-zero = false
+extension-pkg-allow-list = []
+extension-pkg-whitelist = []
+fail-on = []
+fail-under = 10
+ignore = [".devcontainer", ".vscode", ".github", ".git", "doc", "other"]
+ignore-paths = []
+ignore-patterns = ["__pycache__", ".pytest_cache"]
+ignored-modules = []
+jobs = 0
+limit-inference-results = 100
+load-plugins = [
+    "pylint.extensions.broad_try_clause",
+    "pylint.extensions.code_style",
+    "pylint.extensions.emptystring",
+    "pylint.extensions.comparetozero",
+    "pylint.extensions.comparison_placement",
+    "pylint.extensions.confusing_elif",
+    "pylint.extensions.for_any_all",
+    "pylint.extensions.consider_ternary_expression",
+    "pylint.extensions.bad_builtin",
+    "pylint.extensions.mccabe",
+    "pylint.extensions.docstyle",
+    "pylint.extensions.check_elif",
+    "pylint.extensions.empty_comment",
+    "pylint.extensions.eq_without_hash",
+    "pylint.extensions.private_import",
+    "pylint.extensions.redefined_variable_type",
+    "pylint.extensions.no_self_use",
+    "pylint.extensions.overlapping_exceptions",
+    "pylint.extensions.docparams",
+    "pylint.extensions.redefined_loop_name",
+    "pylint.extensions.set_membership",
+    "pylint.extensions.typing",
+    "pylint.extensions.while_used",
+]
+msg-template = ""
+output-format = "text"
+persistent = true
+# py-version = [3, 10]
+recursive = false
+reports = false
+score = true
+suggestion-mode = true
+unsafe-load-any-extension = false
+
+[tool.pylint.basic]
+argument-naming-style = "snake_case"
+# argument-rgx =
+attr-naming-style = "snake_case"
+# attr-rgx =
+bad-names = ["foo", "bar", "baz", "toto", "tutu", "tata"]
+bad-names-rgxs = []
+class-attribute-naming-style = "snake_case"
+# class-attribute-rgx =
+class-const-naming-style = "UPPER_CASE"
+# class-const-rgx =
+class-naming-style = "PascalCase"
+# class-rgx =
+const-naming-style = "UPPER_CASE"
+# const-rgx =
+docstring-min-length = -1
+function-naming-style = "snake_case"
+# function-rgx =
+good-names = ["i", "j", "k", "ex", "Run", "_"]
+good-names-rgxs = []
+include-naming-hint = false
+inlinevar-naming-style = "any"
+# inlinevar-rgx =
+method-naming-style = "snake_case"
+# method-rgx =
+module-naming-style = "snake_case"
+# module-rgx =
+name-group = []
+# no-docstring-rgx = "^_"
+property-classes = ["abc.abstractproperty"]
+# typevar-rgx =
+variable-naming-style = "snake_case"
+# variable-rgx =
+
+[tool.pylint.classes]
+check-protected-access-in-special-methods = false
+defining-attr-methods = ["__init__", "__new__", "setUp", "__post_init__"]
+exclude-protected = ["_asdict", "_fields", "_replace", "_source", "_make"]
+valid-classmethod-first-arg = ["cls"]
+valid-metaclass-classmethod-first-arg = ["cls"]
+
+[tool.pylint.design]
+exclude-too-few-public-methods = []
+ignored-parents = []
+max-args = 5
+max-attributes = 7
+max-bool-expr = 5
+max-branches = 12
+max-complexity = 10
+max-locals = 15
+max-parents = 7
+max-public-methods = 20
+max-returns = 6
+max-statements = 50
+min-public-methods = 2
+
+[tool.pylint.exceptions]
+overgeneral-exceptions = ["builtins.BaseException", "builtins.Exception"]
+
+[tool.pylint.format]
+expected-line-ending-format = ""
+ignore-long-lines = "^\\s*(# )?<?https?://\\S+>?$"
+indent-after-paren = 4
+indent-string = "    "
+max-line-length = 120
+max-module-lines = 2000
+single-line-class-stmt = false
+single-line-if-stmt = false
+
+[tool.pylint.imports]
+allow-any-import-level = []
+allow-wildcard-with-all = false
+deprecated-modules = []
+ext-import-graph = ""
+import-graph = ""
+int-import-graph = ""
+known-standard-library = []
+known-third-party = ["enchant"]
+preferred-modules = []
+
+[tool.pylint.logging]
+logging-format-style = "new"
+logging-modules = ["logging"]
+
+[tool.pylint.method_args]
+timeout-methods = [
+    "requests.api.delete",
+    "requests.api.get",
+    "requests.api.head",
+    "requests.api.options",
+    "requests.api.patch",
+    "requests.api.post",
+    "requests.api.put",
+    "requests.api.request",
+]
+
+[tool.pylint.miscellaneous]
+notes = ["FIXME", "XXX"]
+notes-rgx = ""
+
+[tool.pylint.refactoring]
+max-nested-blocks = 5
+never-returning-functions = ["sys.exit", "argparse.parse_error"]
+
+[tool.pylint.similarities]
+ignore-comments = true
+ignore-docstrings = true
+ignore-imports = true
+ignore-signatures = true
+min-similarity-lines = 4
+
+[tool.pylint.spelling]
+max-spelling-suggestions = 4
+spelling-dict = ""
+spelling-ignore-comment-directives = "fmt: on,fmt: off,noqa:,noqa,nosec,isort:skip,mypy:"
+spelling-ignore-words = ""
+spelling-private-dict-file = ""
+spelling-store-unknown-words = false
+
+[tool.pylint.string]
+check-quote-consistency = false
+check-str-concat-over-line-jumps = false
+
+[tool.pylint.typecheck]
+contextmanager-decorators = ["contextlib.contextmanager"]
+generated-members = []
+ignore-mixin-members = true
+ignore-none = true
+ignore-on-opaque-inference = true
+ignored-checks-for-mixins = [
+    "no-member",
+    "not-async-context-manager",
+    "not-context-manager",
+    "attribute-defined-outside-init",
+]
+ignored-classes = [
+    "optparse.Values",
+    "thread._local",
+    "_thread._local",
+    "argparse.Namespace",
+]
+missing-member-hint = true
+missing-member-hint-distance = 1
+missing-member-max-choices = 1
+mixin-class-rgx = ".*[Mm]ixin"
+signature-mutators = []
+
+[tool.pylint.variables]
+additional-builtins = []
+allow-global-unused-variables = true
+allowed-redefined-builtins = []
+callbacks = ["cb_", "_cb"]
+dummy-variables-rgx = "_+$|(_[a-zA-Z0-9_]*[a-zA-Z0-9]+?$)|dummy|^ignored_|^unused_"
+ignored-argument-names = "_.*|^ignored_|^unused_"
+init-import = false
+redefining-builtins-modules = [
+    "six.moves",
+    "past.builtins",
+    "future.builtins",
+    "builtins",
+    "io",
+]
+
+[tool.pylint.broad_try_clause]
+max-try-statements = 1
+
+[tool.pylint.code_style]
+max-line-length-suggestions = 0
+
+[tool.pylint.deprecated_builtins]
+bad-functions = ["map", "filter"]
+
+[tool.pylint.parameter_documentation]
+accept-no-param-doc = false
+accept-no-raise-doc = false
+accept-no-return-doc = false
+accept-no-yields-doc = false
+default-docstring-type = "sphinx"
+
+[tool.pylint.typing]
+runtime-typing = true
+
+## Pyright #############################################################################################################
+# For details about 'tool.pyright' section, refer to:
+#   https://github.com/microsoft/pyright/blob/main/docs/configuration.md
+
+[tool.pyright]
+include = ["src", "tests"]
+exclude = [
+    ".devcontainer",
+    ".vscode",
+    ".github",
+    ".git",
+    "doc",
+    "other",
+    "**/__pycache__",
+    "**/.pytest_cache",
+]
+# ignore = []
+# strict = []
+# defineConstant = {}
+typeshedPath = ""
+stubPath = ""
+venvPath = "/usr/venvs"
+venv = "development"
+# verboseOutput = false
+extraPaths = ["src", "/usr/venvs/development/lib/python3.11/site-packages"]
+typeCheckingMode = "basic"
+useLibraryCodeForTypes = true
+reportMissingTypeStubs = false
+
+## Black ###############################################################################################################
+# For details about 'tool.black' section, refer to:
+#   https://black.readthedocs.io/en/stable/usage_and_configuration/the_basics.html#configuration-format
+#   black --help
+
+[tool.black]
+line-length = 120
+extend-exclude = "/(.devcontainer|.vscode|.github|.git|doc|other|__pycache__|.pytest_cache)/"
+
+## Doc8 ################################################################################################################
+# For details about 'tool.doc8' section, refer to:
+#   https://github.com/PyCQA/doc8#doc8
+
+[tool.doc8]
+allow-long-titles = true
+ignore = ["D004"]
+ignore-path = [
+    ".devcontainer",
+    ".vscode",
+    ".github",
+    ".git",
+    "other",
+    "__pycache__",
+    ".pytest_cache",
+]
+max-line-length = 120
+file-encoding = "utf-8"
+extension = [".rst", ".py"]
+
+## Coverage ############################################################################################################
+# Coverage is the underlying coverage tool behind pytest-cov, for details refer to:
+#   https://coverage.readthedocs.io/en/latest/config.html
+
+[tool.coverage.run]
+branch = true
+data_file = "tests/.coverage/.coverage"
+source = ["src", "tests"]
+
+[tool.coverage.report]
+show_missing = true
+exclude_also = [
+    # Don't complain about missing debug-only code:
+    "def __repr__",
+    "if self\\.debug",
+
+    # Don't complain if tests don't hit defensive assertion code:
+    "raise AssertionError",
+    "raise NotImplementedError",
+
+    # Don't complain if non-runnable code isn't run:
+    "if 0:",
+    "if __name__ == .__main__.:",
+
+    # Don't complain about abstract methods, they aren't run:
+    "@(abc\\.)?abstractmethod",
+]
+
+[tool.coverage.html]
+directory = "tests/.coverage"
+
+## Pytest ##############################################################################################################
+# For details about 'tool.pytest.ini_options' section, refer to:
+#       https://docs.pytest.org/en/latest/reference/reference.html#configuration-options
+#       https://docs.pytest.org/en/latest/reference/reference.html#ini-options-ref
+# For details about pytest-mock extension settings refer to:
+#       https://pytest-mock.readthedocs.io/en/latest/configuration.html
+# For details about pytest-cov extension settings refer to:
+#       https://pytest-cov.readthedocs.io/en/latest/
+# For details about pytest-randomly extension settings refer to:
+#       https://github.com/pytest-dev/pytest-randomly
+# For details about pytest-check extension settings refer to:
+#       https://github.com/okken/pytest-check
+# For details about pytest-html extension settings refer to:
+#       https://github.com/okken/pytest-check
+
+[tool.pytest.ini_options]
+addopts = "--cov --cov-report=term --verbose"
+console_output_style = "count"
+filterwarnings = ["error", "ignore::DeprecationWarning"]
+log_auto_indent = true
+log_cli = true
+log_cli_format = "%(asctime)s %(levelname)s %(message)s"
+log_cli_level = "DEBUG"
+# log_file = "./tests/pytest-log.txt"
+log_file_format = "%(asctime)s %(levelname)s %(message)s"
+log_file_level = "DEBUG"
+log_format = "%(asctime)s %(levelname)s %(message)s"
+log_level = "DEBUG"
+python_files = ["test_*.py"]
+python_functions = ["test_*"]
+pythonpath = ["src"]
+required_plugins = [
+    "pytest-mock",
+    "pytest-sugar",
+    "pytest-cov",
+    "pytest-randomly",
+    "pytest-check",
+    "pytest-html",
+]
+testpaths = ["tests"]
+
+## isort ###############################################################################################################
+# For details about 'tool.isort' section, refer to:
+#   https://pycqa.github.io/isort/docs/configuration/config_files.html
+#   https://pycqa.github.io/isort/docs/configuration/black_compatibility.html
+# Note that we just set it to adopt the built in profile for 'black' code formatter.
+
+[tool.isort]
+profile = "black"
+line_length = 120

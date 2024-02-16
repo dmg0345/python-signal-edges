@@ -1,0 +1,227 @@
+// Visual Studio Code workspace settings.
+{
+    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    // Visual Studio Code Settings
+    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    // Do not show the start screen.
+    "workbench.startupEditor": "none",
+    // Render all whitespace as dots.
+    "editor.renderWhitespace": "all",
+    // Disable editor autoindentation as the formatter will handle that.
+    "editor.autoIndent": "none",
+    // Disable the minimap that appears on the right when coding.
+    "editor.minimap.enabled": false,
+    // Format files on save, except for JSON with comments files.
+    // Note that JSON files with comments are intepreted as .jsonc files.
+    "editor.formatOnSave": true,
+    "[jsonc]": {
+        "editor.formatOnSave": false
+    },
+    // Enable quick suggestions everywhere except for comments, this is useful for documentation intellisense.
+    "editor.quickSuggestions": {
+        "comments": "off",
+        "strings": true,
+        "other": "on"
+    },
+    // Do not reveal files in the explorer as they are open.
+    "explorer.autoReveal": false,
+    // Default theme.
+    "workbench.colorTheme": "Tokyo Night",
+    // Increase line buffer of the integrated terminal.
+    "terminal.integrated.scrollback": 10000000,
+    // Set specific JSON files to be treated as JSON with comments to avoid warnings on them.
+    "files.associations": {
+        "**/.vscode/launch.json": "jsonc"
+    },
+    // Exclude files from appearing in the explorer.
+    "files.exclude": {
+        "**/.git": true,
+        "**/__pycache__": true,
+        "**/.pytest_cache": true
+    },
+    // Disable detection of indentation based on content and use settings below.
+    "editor.detectIndentation": false,
+    // Configure tab sizes for files, 4 spaces by default.
+    "[*]": {"editor.tabSize": 4},
+    "[yaml]": {"editor.tabSize": 2},
+    "editor.insertSpaces": true,
+
+    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    // Python / Pylance / Pyright extension settings
+    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    // The Python executable to use, which points to the development environment.
+    "python.defaultInterpreterPath": "/usr/venvs/development/bin/python",
+    // Add the Python packages in the virtual environment for autocompletion / analysis purposes.
+    "python.analysis.extraPaths": [
+        // Add source and test paths explicitly.
+        "${workspaceFolder}/src",
+        // Path to the site-packages in the virtual environment.
+        "/usr/venvs/development/lib/python3.11/site-packages"
+    ],
+    "python.autoComplete.extraPaths": [
+        // Add source and test paths explicitly.
+        "${workspaceFolder}/src",
+        // Path to the site-packages in the virtual environment.
+        "/usr/venvs/development/lib/python3.11/site-packages"
+    ],
+    // Set the path to the Poetry executable, which is already in PATH.
+    "python.poetryPath": "poetry",
+    // Disable automatic activation of the environment, this is handled in the integrated terminal profile, as
+    // doing it from here causes commands not to be executed but only printed, causing problems.
+    "python.terminal.activateEnvInCurrentTerminal": false,
+    "python.terminal.activateEnvironment": false,
+    // Set Pylance to be used as a language server.
+    "python.languageServer": "Pylance",
+    // Enable Pytest for the tests.
+    "python.testing.pytestEnabled": true,
+    // Use the binary in the virtual environment to run the tests, which is already in PATH.
+    // Note pyproject.toml can't be passed, it is taken from the root directory.
+    "python.testing.pytestPath": "pytest",
+    // Autodiscover tests on save.
+    "python.testing.autoTestDiscoverOnSaveEnabled": true,
+    // Set the default analysis in Pyright to 'basic'.
+    "python.analysis.typeCheckingMode": "basic",
+    // Disable hints for function return types, this can result in autoimports that break interfaces.
+    "python.analysis.inlayHints.functionReturnTypes": false,
+    // Do not add parentheses to function completions.
+    "python.analysis.completeFunctionParens": false,
+    // Do not offer autoimport completions as that breaks interfaces.
+    "python.analysis.autoImportCompletions": false,
+    // Set the diagnostics mode so that the full workspace is analyzed.
+    "python.analysis.diagnosticMode": "workspace",
+    // Set debug variables.
+    "python.analysis.logLevel": "Trace",
+
+    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    // Python Black and isort Formatters extension settings
+    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    // Ensure the Black binary in the environment is used.
+    "black-formatter.importStrategy": "fromEnvironment",
+    // Ensure the pyproject.toml file is used as the rules for Black.
+    "black-formatter.args": [
+        "--config", "${workspaceFolder}/pyproject.toml"
+    ],
+    // Ensure the isort binary in the environment is used.
+    "isort.importStrategy": "fromEnvironment",
+    // Ensure the pyproject.toml file is used as the rules for isort.
+    "isort.args": [
+        "--settings-path", "${workspaceFolder}/pyproject.toml"
+    ],
+    // Set Python files to be configured by the Python Black Formatter extension, and enable to format them on save and
+    // isort to organize their imports.
+    "[python]": {
+        "editor.defaultFormatter": "ms-python.black-formatter",
+        "editor.formatOnSave": true,
+        "editor.codeActionsOnSave": {
+            "source.organizeImports": true
+        }
+    },
+
+    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    // Python Pylint Linter extension settings
+    // NOTE: Running Pylint on save seems to be automatically enabled by this extension.
+    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    // Ensure the Pylint binary in the environment is used.
+    "pylint.importStrategy": "fromEnvironment",
+    // Ensure the pyproject.toml file is used as the rules for Pylint.
+    "pylint.args": [
+        "--rcfile", "${workspaceFolder}/pyproject.toml"
+    ],
+
+    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    // Python Jupyter extension settings
+    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    // Set the working directory when running a folder to the project root.
+    "jupyter.notebookFileRoot": "${workspaceFolder}/other/notebooks",
+    // Theme matplotlibs outputs to match the Visual Studio Code editor.
+    "jupyter.themeMatplotlibPlots": true,
+    // Allow to debug external code.
+    "jupyter.debugJustMyCode": false,
+
+    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    // Python Docstring Generator extension settings
+    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    // Use Sphinx format for docstrings, without types, this will be infered from the annotations.
+    "autoDocstring.docstringFormat": "sphinx-notypes",
+    // Generate the docstring when pressing enter.
+    "autoDocstring.generateDocstringOnEnter": true,
+    // Do not start the docstring in a new line.
+    "autoDocstring.startOnNewLine": false,
+
+    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    // DrawIO extension settings
+    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    // Use the online version, which is the most recent one.
+    "hediet.vscode-drawio.offline": false,
+
+    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    // Even Better TOML extension settings.
+    // NOTE: We mainly use this for syntax highlighting, rather than fully fledged formatting, thus it is not fully
+    // configured, just use the defaults.
+    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    // Ensure bundled Taplo is used.
+    "evenBetterToml.taplo.bundled": true,
+    // Disable the use of a configuration file for Taplo, we configure it here.
+    "evenBetterToml.taplo.configFile.enabled": false,
+
+    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    // reStructured Text extension settings
+    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    // Run linter on save.
+    "restructuredtext.linter.run": "onSave",
+    // Use sphinx.
+    "restructuredtext.preview.name": "sphinx",
+    // Set doc8 as the restructured text linter.
+    "restructuredtext.linter.rstcheck.executablePath": "",
+    "restructuredtext.linter.rst-lint.executablePath": "",
+    "restructuredtext.linter.doc8.executablePath": "/usr/venvs/development/bin/doc8",
+    // Set doc8 restructured text linter to use the pyproject.toml file for settings.
+    "restructuredtext.linter.doc8.extraArgs": [
+        "--config", "${workspaceFolder}/pyproject.toml"
+    ],
+    // Set styles to no styles.
+    "restructuredtext.styles": [],
+    // Inherit identation settings from Visual Studio Code.
+    "restructuredtext.editor.listEditing.list.indentationSize": "inherit",
+    // Enable Esbonio, also in Python files.
+    "esbonio.server.enabled": true,
+    "esbonio.server.enabledInPyFiles": true,
+    // Set the executable for esbonio.
+    "esbonio.server.startupModule": "esbonio",
+    // Set the the directories for sphinx.
+    "esbonio.sphinx.buildDir": "${workspaceFolder}/doc/.sphinx_build",
+    "esbonio.sphinx.confDir": "${workspaceFolder}/doc",
+    // Let Sphinx determine the number of jobs to create.
+    "esbonio.sphinx.numJobs": 0,
+    // Set debug levels.
+    "esbonio.server.logLevel": "error",
+    "restructuredtext.trace": "off",
+
+    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    // PowerShell extension settings
+    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    // Formatting settings.
+    "powershell.codeFormatting.openBraceOnSameLine": false,
+    // Start the terminal for intellisense and related on the background.
+    "powershell.integratedConsole.startInBackground": true,
+    "powershell.integratedConsole.showOnStartup": false,
+    // Disable PowerShell sidebar.
+    "powershell.sideBar.CommandExplorerVisibility": false,
+    // Disable PowerShell updates.
+    "powershell.promptToUpdatePowerShell": false,
+    // Disable banners when starting PowerShell.
+    "powershell.integratedConsole.suppressStartupBanner": true,
+
+    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    // Github Actions extension settings
+    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    // Disable extension, it is only used for validation and intellisense of Github Action files.
+    "github-actions.workflows.pinned.workflows": [],
+    "github-actions.workflows.pinned.refresh.enabled": false,
+
+    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    // Git-Log Graph extension settings
+    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    // Trigger from the status bar.
+    "git-log--graph.position": "editor"
+}

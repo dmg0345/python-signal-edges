@@ -1,0 +1,305 @@
+# Github Actions, full workflow file.
+#
+# For details refer to:
+#
+# - Documentation: https://docs.github.com/en/actions
+# - Github Actions Flow: https://docs.github.com/en/actions/learn-github-actions/understanding-github-actions#the-components-of-github-actions
+# - Default environment variables: https://docs.github.com/en/actions/learn-github-actions/variables#default-environment-variables
+# - Contexts: https://docs.github.com/en/actions/learn-github-actions/contexts
+# - Workflows syntax: https://docs.github.com/en/actions/using-workflows/workflow-syntax-for-github-actions
+# - Github-Hosted runners: https://docs.github.com/en/actions/using-workflows/workflow-syntax-for-github-actions#choosing-github-hosted-runners
+# - Built-in actions: https://github.com/actions
+#     - Checkout action: https://github.com/actions/checkout
+#     - Download artifact action: https://github.com/actions/download-artifact
+#     - Upload artifact action: https://github.com/actions/upload-artifact
+#     - Glob action: https://github.com/actions/toolkit/tree/main/packages/glob
+# - Deploy to Netlify: https://github.com/nwtgck/actions-netlify
+
+on:
+  workflow_call:
+    inputs:
+      docker_base_image:
+        description: Name of the base Docker image to use.
+        required: true
+        type: string
+      deploy:
+        description: The deployment to perform, one of 'production', 'staging' or 'development'.
+        required: false
+        default: "none"
+        type: string
+      deploy_alias:
+        description: Additional deploy alias for the deployment URLs, use URL safe characters and a reasonable lenght.
+        required: false
+        default: ""
+        type: string
+    secrets:
+      netlify_pat:
+        description: Personal Access Token to Netlify, if deploying
+        required: false
+      netlify_site_id:
+        description: Site ID of netlify, if deploying
+        required: false
+
+defaults:
+  run:
+    # Set the default shell to PowerShell everywhere
+    shell: pwsh
+
+env:
+  # Subfolder where the repository will be cloned.
+  CLONE_FOLDER: repo
+  # Folder where the tests HTML report is stored.
+  TESTS_HTML_FOLDER: tests/.test_results
+  # Folder where the Coverage HTML report is stored.
+  COVERAGE_HTML_FOLDER: tests/.coverage
+  # Folder where the HTML documentation is stored.
+  DOCS_HTML_FOLDER: doc/.output/html
+
+name: Reusable Main Workflow
+jobs:
+  # Builds wheels.
+  build:
+    runs-on: [ubuntu-22.04]
+    container:
+        image: ${{ inputs.docker_base_image }}
+    steps:
+      - name: Checkout ${{ github.sha }}
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ github.sha }}
+          path: ${{ env.CLONE_FOLDER }}
+          submodules: recursive
+      - name: Build wheels
+        run: |
+          # Activate development virtual environment.
+          & "$env:VIRTUAL_ENVS_DEVELOPMENT_DIR/bin/Activate.ps1";
+          # Print remaining space.
+          Get-PSDrive | Write-Output;
+          # Rename clone folder to configuration, move to repository and ensure it is clean.
+          Push-Location "$ENV:CLONE_FOLDER";
+
+          # Build wheels.
+          poetry build --no-cache --no-interaction --format wheel -vvv;
+          if ($LastExitCode -ne 0) { throw "Poetry failed to build wheels with '$LastExitCode'." }
+
+          # Go back to parent folder, TAR it and rename it back to original.
+          # Note that the folders and files that are not relevant are excluded, to reduce time, size and not to
+          # surpass runner space limit.
+          Pop-Location;
+          tar `
+            --exclude="$ENV:CLONE_FOLDER/.git" `
+            -cf "$ENV:CLONE_FOLDER.repo.tar.gz" "$ENV:CLONE_FOLDER";
+          if ($LastExitCode -ne 0) { throw "Compressing the repository failed with error '$LastExitCode'." }
+      - name: Upload tarred ${{ github.sha }}
+        uses: actions/upload-artifact@v3
+        with:
+          name: ${{ github.sha }}
+          path: '*.repo.tar.gz'
+          if-no-files-found: error
+
+  # Run 'black'.
+  black:
+    needs: [build]
+    runs-on: [ubuntu-22.04]
+    container:
+        image: ${{ inputs.docker_base_image }}
+    steps:
+      - name: Download tarred ${{ github.sha }}
+        uses: actions/download-artifact@v3
+        with:
+          name: ${{ github.sha }}
+      - name: Run 'black'
+        run: |
+          # Enter virtual environment.
+          & "$env:VIRTUAL_ENVS_DEVELOPMENT_DIR/bin/Activate.ps1";
+          # Untar repository and enter uncompressed.
+          tar -xf "$ENV:CLONE_FOLDER.repo.tar.gz" "$ENV:CLONE_FOLDER";
+          if ($LastExitCode -ne 0) { throw "Decompressing '$ENV:CLONE_FOLDER.repo.tar.gz' failed with error '$LastExitCode'." }
+          Push-Location "$ENV:CLONE_FOLDER";
+          # Run.
+          ./manage.ps1 black;
+
+  # Run 'pylint'.
+  pylint:
+    needs: [build]
+    runs-on: [ubuntu-22.04]
+    container:
+        image: ${{ inputs.docker_base_image }}
+    steps:
+      - name: Download tarred ${{ github.sha }}
+        uses: actions/download-artifact@v3
+        with:
+          name: ${{ github.sha }}
+      - name: Run 'pylint'
+        run: |
+          # Enter virtual environment.
+          & "$env:VIRTUAL_ENVS_DEVELOPMENT_DIR/bin/Activate.ps1";
+          # Untar repository and enter uncompressed.
+          tar -xf "$ENV:CLONE_FOLDER.repo.tar.gz" "$ENV:CLONE_FOLDER";
+          if ($LastExitCode -ne 0) { throw "Decompressing '$ENV:CLONE_FOLDER.repo.tar.gz' failed with error '$LastExitCode'." }
+          Push-Location "$ENV:CLONE_FOLDER";
+          # Run.
+          ./manage.ps1 pylint;
+
+  # Run 'pyright'.
+  pyright:
+    needs: [build]
+    runs-on: [ubuntu-22.04]
+    container:
+        image: ${{ inputs.docker_base_image }}
+    steps:
+      - name: Download tarred ${{ github.sha }}
+        uses: actions/download-artifact@v3
+        with:
+          name: ${{ github.sha }}
+      - name: Run 'pyright'
+        run: |
+          # Enter virtual environment.
+          & "$env:VIRTUAL_ENVS_DEVELOPMENT_DIR/bin/Activate.ps1";
+          # Untar repository and enter uncompressed.
+          tar -xf "$ENV:CLONE_FOLDER.repo.tar.gz" "$ENV:CLONE_FOLDER";
+          if ($LastExitCode -ne 0) { throw "Decompressing '$ENV:CLONE_FOLDER.repo.tar.gz' failed with error '$LastExitCode'." }
+          Push-Location "$ENV:CLONE_FOLDER";
+          # Run.
+          ./manage.ps1 pyright;
+
+  # Run 'doc8'.
+  doc8:
+    needs: [build]
+    runs-on: [ubuntu-22.04]
+    container:
+        image: ${{ inputs.docker_base_image }}
+    steps:
+      - name: Download tarred ${{ github.sha }}
+        uses: actions/download-artifact@v3
+        with:
+          name: ${{ github.sha }}
+      - name: Run 'doc8'
+        run: |
+          # Enter virtual environment.
+          & "$env:VIRTUAL_ENVS_DEVELOPMENT_DIR/bin/Activate.ps1";
+          # Untar repository and enter uncompressed.
+          tar -xf "$ENV:CLONE_FOLDER.repo.tar.gz" "$ENV:CLONE_FOLDER";
+          if ($LastExitCode -ne 0) { throw "Decompressing '$ENV:CLONE_FOLDER.repo.tar.gz' failed with error '$LastExitCode'." }
+          Push-Location "$ENV:CLONE_FOLDER";
+          # Run.
+          ./manage.ps1 doc8;
+
+  # Run 'tests' on all configurations.
+  tests:
+    needs: [black, pylint, pyright]
+    runs-on: [ubuntu-22.04]
+    container:
+      image: ${{ inputs.docker_base_image }}
+    steps:
+      - name: Download tarred ${{ github.sha }}
+        uses: actions/download-artifact@v3
+        with:
+          name: ${{ github.sha }}
+      - name: Run tests with 'pytest' and generate HTML test results and coverage reports
+        run: |
+          # Enter virtual environment.
+          & "$env:VIRTUAL_ENVS_DEVELOPMENT_DIR/bin/Activate.ps1";
+          # Untar repository and enter uncompressed.
+          tar -xf "$ENV:CLONE_FOLDER.repo.tar.gz" "$ENV:CLONE_FOLDER";
+          if ($LastExitCode -ne 0) { throw "Decompressing '$ENV:CLONE_FOLDER.repo.tar.gz' failed with error '$LastExitCode'." }
+          Push-Location "$ENV:CLONE_FOLDER";
+          # Run.
+          pytest --html="$ENV:TESTS_HTML_FOLDER/test_report.html" --self-contained-html --cov-report=html .;
+          if ($LastExitCode -ne 0) { throw "Tests execution or HTML report generation failed with error '$LastExitCode'." }
+      - name: Upload HTML reports with test results
+        uses: actions/upload-artifact@v3
+        with:
+          name: Test results HTML reports
+          path: "**/${{ env.TESTS_HTML_FOLDER }}"
+          if-no-files-found: error
+      - name: Upload HTML reports with coverage
+        uses: actions/upload-artifact@v3
+        with:
+          name: Coverage HTML reports
+          path: "**/${{ env.COVERAGE_HTML_FOLDER }}"
+          if-no-files-found: error
+
+  # Run 'docs' on all configurations.
+  docs:
+    needs: [black, pylint, pyright, doc8]
+    runs-on: [ubuntu-22.04]
+    container:
+        image: ${{ inputs.docker_base_image }}
+    steps:
+      - name: Download tarred ${{ github.sha }}
+        uses: actions/download-artifact@v3
+        with:
+          name: ${{ github.sha }}
+      - name: Generate HTML documentation
+        run: |
+          # Enter virtual environment.
+          & "$env:VIRTUAL_ENVS_DEVELOPMENT_DIR/bin/Activate.ps1";
+          # Untar repository and enter uncompressed.
+          tar -xf "$ENV:CLONE_FOLDER.repo.tar.gz" "$ENV:CLONE_FOLDER";
+          if ($LastExitCode -ne 0) { throw "Decompressing '$ENV:CLONE_FOLDER.repo.tar.gz' failed with error '$LastExitCode'." }
+          Push-Location "$ENV:CLONE_FOLDER";
+          # Run.
+          ./manage.ps1 docs;
+      - name: Upload HTML documentation
+        uses: actions/upload-artifact@v3
+        with:
+          name: HTML documentation
+          path: "**/${{ env.DOCS_HTML_FOLDER }}"
+          if-no-files-found: error
+
+  # Deploy to Netlify.
+  deploy:
+    needs: [tests, docs]
+    runs-on: [ubuntu-22.04]
+    if: ${{ inputs.deploy != 'none' }}
+    steps:
+      - name: Download HTML documentation
+        uses: actions/download-artifact@v3
+        with:
+          name: HTML documentation
+          path: html_docs
+      - name: Download test results HTML reports
+        uses: actions/download-artifact@v3
+        with:
+          name: Test results HTML reports
+          path: html_test_results
+      - name: Download coverage HTML reports
+        uses: actions/download-artifact@v3
+        with:
+          name: Coverage HTML reports
+          path: html_coverage_reports
+      - name: Include HTML test reports and HTML coverage reports in documentation
+        run: |
+          # Create source paths to folders with reports.
+          $srcCoverageReports = "./html_coverage_reports/$ENV:CLONE_FOLDER/$ENV:COVERAGE_HTML_FOLDER";
+          $srcTestResultReports = "./html_test_results/$ENV:CLONE_FOLDER/$ENV:TESTS_HTML_FOLDER";
+
+          # Create destination paths to folders with the reports.
+          $destCoverageReports = "./html_docs/$ENV:CLONE_FOLDER/$ENV:DOCS_HTML_FOLDER/_static/_test_coverage";
+          $destTestResultReports = "./html_docs/$ENV:CLONE_FOLDER/$ENV:DOCS_HTML_FOLDER/_static/_test_results";
+
+          # Create destination folders as they do not exist.
+          New-Item -ItemType Directory -Path "$destCoverageReports" -Force | Out-Null;
+          New-Item -ItemType Directory -Path "$destTestResultReports" -Force | Out-Null;
+
+          # Copy contents of source folders to destination.
+          Get-ChildItem -Path "$srcCoverageReports" -Recurse | Move-Item -Destination "$destCoverageReports";
+          Get-ChildItem -Path "$srcTestResultReports" -Recurse | Move-Item -Destination "$destTestResultReports";
+      - name: Deploy to Netlify environment
+        uses: nwtgck/actions-netlify@v2.1.0
+        with:
+          publish-dir: html_docs/${{ env.CLONE_FOLDER }}/${{ env.DOCS_HTML_FOLDER }}
+          production-deploy: ${{ inputs.deploy == 'production' }}
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          enable-pull-request-comment: true
+          enable-commit-comment: false
+          enable-commit-status: false
+          enable-github-deployment: false
+          overwrites-pull-request-comment: false
+          alias: ${{ inputs.deploy_alias }}
+          fails-without-credentials: true
+        env:
+          NETLIFY_AUTH_TOKEN: ${{ secrets.netlify_pat }}
+          NETLIFY_SITE_ID: ${{ secrets.netlify_site_id }}
+        timeout-minutes: 1

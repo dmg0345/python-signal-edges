@@ -1,0 +1,21 @@
+# Development workflow
+#
+# This workflow triggers whenever there is a push on the 'develop' branch.
+# The 'develop' branch should be configured to restrict direct commits.
+
+on:
+  push:
+    branches: develop
+
+name: (Development) - Full
+run-name: "#${{ github.run_number }}: ${{ github.event.head_commit.message }}"
+jobs:
+  full:
+    uses: dmg0345/python-signal-edges/.github/workflows/reusable-full.yml@master
+    secrets:
+      netlify_pat: ${{ secrets.NETLIFY_PAT }}
+      netlify_site_id: ${{ secrets.NETLIFY_SITE_ID }}
+    with:
+      docker_base_image: dmg00345/python_signal_edges:latest
+      deploy: development
+      deploy_alias: development

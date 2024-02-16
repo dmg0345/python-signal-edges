@@ -1,0 +1,31 @@
+# Presets.
+legend.frameon: False
+legend.numpoints: 1
+legend.scatterpoints: 1
+xtick.direction: out
+ytick.direction: out
+axes.axisbelow: True
+axes.grid: True
+font.family: sans-serif
+font.sans-serif: Arial, Liberation Sans, DejaVu Sans, Bitstream Vera Sans, sans-serif
+grid.linestyle: dashed
+lines.solid_capstyle: round
+axes.linewidth: 0
+xtick.major.size: 0
+ytick.major.size: 0
+xtick.minor.size: 0
+ytick.minor.size: 0
+
+# Font colors
+text.color: E0E0E0
+axes.labelcolor: E0E0E0
+xtick.color: E0E0E0
+ytick.color: E0E0E0
+
+# Background colors
+figure.facecolor: 0A0A0A
+axes.facecolor: 0A0A0A
+savefig.facecolor: 0A0A0A
+
+# Grid colors
+grid.color: 151515

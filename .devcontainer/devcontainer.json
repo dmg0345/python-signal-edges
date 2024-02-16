@@ -1,0 +1,57 @@
+// For format details, see https://aka.ms/devcontainer.json.
+// This is the devcontainer JSON configuration file for the Visual Studio Code Dev Containers extension.
+{
+    // Path to the 'docker-compose' file to use relative to the location of this file.
+    // Using docker-compose allows to run one to multiple containers, depending on the application.
+    "dockerComposeFile": "compose.yaml",
+    // Name of the service defined in the 'docker-compose' file which will be used in Visual Studio Code.
+    "service": "vscode",
+    // Set the workspace folder to the mapped volume to the project root folder set in 'docker-compose' file.
+    "workspaceFolder": "/workspace",
+    // Set the name of the container in Visual Studio Code user interface, this is not the same as the container name.
+    "name": "python_signal_edges",
+    // Apply customizations to tools in the container.
+    "customizations": {
+        "vscode": {
+            // Extensions to use.
+            "extensions": [
+                // Find extensions at: https://marketplace.visualstudio.com/vscode
+                // Python related extensions.
+                "ms-python.python@2023.10.1", // Includes Pylance (+Pyright).
+                "ms-python.isort@2023.9.11781018",
+                "ms-toolsai.jupyter@2023.5.1101742258",
+                "ms-python.pylint@2023.4.0",
+                "ms-python.black-formatter@2023.2.0",
+                "lextudio.restructuredtext@189.3.0",
+                "trond-snekvik.simple-rst@1.5.3",
+                "njpwerner.autodocstring@0.6.1",
+                "percy.vscode-numpy-viewer@0.1.8",
+                
+                // Other.
+                "ms-vscode.powershell@2023.6.0",
+                "phil294.git-log--graph@0.1.12",
+                "github.vscode-github-actions@0.26.2", // Mainly used for validation and intellisense.
+                "tamasfe.even-better-toml@0.19.0",
+                "hediet.vscode-drawio@1.6.6",
+                "enkia.tokyo-night@0.9.9",
+                "tomoki1207.pdf@1.2.2",
+                "ms-vscode.live-server@0.4.8"
+            ],
+
+            // Set the settings.
+            "settings": {
+                // Define 'pwsh' profile for Linux enviroments, this ensures the use of PowerShell in terminals.
+                // Activate the development Python virtual environment when launching these terminals.
+                "terminal.integrated.profiles.linux": {
+                    "pwsh": {
+                        "path": "pwsh",
+                        "icon": "terminal-powershell",
+                        "args": ["-NoExit", "-Command", "& /usr/venvs/development/bin/Activate.ps1"]
+                    }
+                },
+                // Set the default profile to 'pwsh' in Linux enviroments.
+                "terminal.integrated.defaultProfile.linux": "pwsh"
+            }
+        }
+    }
+}

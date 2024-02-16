@@ -1,0 +1,67 @@
+# Production workflow
+#
+# This workflow triggers whenever there is a push on the 'master' branch.
+# The 'master' branch should be configured to restrict direct commits.
+#
+# - Deploy to PiPy: https://github.com/pypa/gh-action-pypi-publish
+
+on:
+  push:
+    branches: master
+
+defaults:
+  run:
+    # Set the default shell to PowerShell everywhere
+    shell: pwsh
+
+name: (Production) - Full
+run-name: "#${{ github.run_number }}: ${{ github.event.head_commit.message }}"
+jobs:
+  full:
+    uses: dmg0345/python-signal-edges/.github/workflows/reusable-full.yml@master
+    secrets:
+      netlify_pat: ${{ secrets.NETLIFY_PAT }}
+      netlify_site_id: ${{ secrets.NETLIFY_SITE_ID }}
+    with:
+      docker_base_image: dmg00345/python_signal_edges:latest
+      deploy: production
+      deploy_alias: production
+  pypi-build:
+    needs: [full]
+    runs-on: [ubuntu-22.04]
+    container:
+      image: dmg00345/python_signal_edges:latest
+    steps:
+      - name: Checkout ${{ github.sha }}
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ github.sha }}
+          submodules: recursive
+      - name: Build wheels
+        run: |
+          # Build wheels.
+          poetry build --no-cache --no-interaction --format wheel -vvv;
+          if ($LastExitCode -ne 0) { throw "Poetry failed to build wheels with '$LastExitCode'." }
+      - name: Upload distributables
+        uses: actions/upload-artifact@v3
+        with:
+          name: dist
+          path: 'dist'
+          if-no-files-found: error
+  pypi-deploy:
+    needs: [pypi-build]
+    runs-on: [ubuntu-22.04]
+    permissions:
+      id-token: write
+    container:
+      image: dmg00345/python_signal_edges:latest
+    steps:
+      - name: Download distributables
+        uses: actions/download-artifact@v3
+        with:
+          name: dist
+      - name: Publish package to PyPI
+        uses: pypa/gh-action-pypi-publish@release/v1
+        with:
+          password: ${{ secrets.PYPI_TOKEN }}
+          packages-dir: "."
