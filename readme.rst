@@ -2,9 +2,9 @@ Signal Edges
 ------------------------------------------------------------------------------------------------------------------------
 
 **Signal Edges** is a Python package capable of filtering, extracting state levels and edges of signals with millions
-of samples, among other things. It is specially suited for analysis of analog signals obtained through hardware
-recorders such as oscilloscopes or data recorders and hardware automation in CI/CD environments, although it is
-flexible enough to be used for many other different purposes.
+of samples, among other things. It is specially suited for analysis of analog signals obtained through recorders, such
+as oscilloscopes or data recorders, and hardware automation in CI/CD environments, although it is flexible enough to
+be used for many other different purposes.
 
 .. figure:: https://github.com/dmg0345/python-signal-edges/blob/master/doc/.assets/img/007_example_complex_plot_1.png
     :align: center
