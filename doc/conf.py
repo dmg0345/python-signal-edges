@@ -45,7 +45,7 @@ author = "Diego Martinez <dmg0345@gmail.com>"
 # Project copyright.
 copyright = author
 # Project version.
-version = "1.0.2"
+version = "1.0.3"
 # Project release, set it as the same value as version as the separation is not required.
 release = version
 
