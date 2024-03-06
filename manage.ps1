@@ -135,14 +135,6 @@ Set-Content -Path "~/.ssh/known_hosts" -Value "$(ssh-keyscan github.com)" -Force
 # Clone repository in the workspace folder.
 git clone --recurse-submodules --branch master "git@github.com:dmg0345/python-signal-edges.git" ".";
 if ($LASTEXITCODE -ne 0) { throw "Failed to clone repository." }
-
-# Enable desktop lite to be able to configure GUIs.
-& "/usr/local/share/desktop-init.sh";
-# Enable Dark mode in GUIs in Fluxbox by default.
-dconf write "/org/gnome/desktop/interface/color-scheme" "'prefer-dark'";
-if ($LASTEXITCODE -ne 0) { throw "Failed to set dark Mode in file manager." }
-dconf write /com/gexperts/Tilix/theme-variant "'dark'";
-if ($LASTEXITCODE -ne 0) { throw "Failed to set dark Mode in terminals." }
 '@;
 
     Start-DevContainer -DevcontainerFile "$DEVCONTAINER_FILE" -ProjectName "$DEVCONTAINER_PROJECT_NAME" `
