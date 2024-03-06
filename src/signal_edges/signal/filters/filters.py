@@ -17,7 +17,7 @@ from ... import plotter as sep
 
 
 class FiltersMixin(ABC):
-    """Base class for filter mixins for :class:Signal derived classes."""
+    """Base class for filter mixins for :class:`.Signal` derived classes."""
 
     # pylint: disable=too-few-public-methods
 
