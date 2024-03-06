@@ -3,7 +3,8 @@
 # This workflow triggers whenever there is a push on the 'master' branch.
 # The 'master' branch should be configured to restrict direct commits.
 #
-# - Deploy to PiPy: https://github.com/pypa/gh-action-pypi-publish
+# The workflow to deploy to PyPI must not exist in a reusable workflow, refer to below for details:
+#    - Deploy to PyPI: https://github.com/pypa/gh-action-pypi-publish
 
 on:
   push:
