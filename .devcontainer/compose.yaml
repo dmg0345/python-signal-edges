@@ -11,7 +11,7 @@ services:
   vscode:
     # The 'vscode' service is built from the Dockerfile.
     image: dmg00345/python_signal_edges:latest
-    container_name: python_signal_edges
+    container_name: python_signal_edges_container
     build:
       context: ..
       # The path to the DockerFile, relative to the root folder of the workspace.

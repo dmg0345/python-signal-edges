@@ -1,6 +1,6 @@
 # Staging workflow
 #
-# This workflow triggers whenever a pull request is open, reopened or there are new commits on it
+# This workflow triggers whenever a pull request is open, reopened or there are new commits on it.
 
 on: pull_request
 

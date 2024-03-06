@@ -5,8 +5,9 @@ The code snippet below shows how to run the benchmark script from a PowerShell t
 
 .. code-block:: powershell
 
-    kernprof --line-by-line `--builtin --outfile './tests/benchmark/benchmark.lprof' './tests/benchmark/benchmark.py';
-    $output = python -m line_profiler -rmt "./tests/benchmark/benchmark.lprof"; $output = $output -join "`r`n";
+    kernprof --line-by-line --builtin --outfile './tests/benchmark/benchmark.lprof' './tests/benchmark/benchmark.py';
+    $output = python -m line_profiler -rmt "./tests/benchmark/benchmark.lprof";
+    $output = $output -join [System.Environment]::NewLine;
     Set-Content -Path "./tests/benchmark/benchmark.txt" -Value "$output" -Force;
 
 The following shows benchmarks for signals of different types using these scripts:
