@@ -15,7 +15,7 @@ authors = ["Diego Martinez <dmg0345@gmail.com>"]
 readme = "readme.rst"
 homepage = "https://github.com/dmg0345/python-signal-edges"
 repository = "https://github.com/dmg0345/python-signal-edges"
-documentation = "https://python-signal-edges.netlify.app/"
+documentation = "https://dmg0345-python-signal-edges.netlify.app/"
 keywords = [
     "python",
     "signal",

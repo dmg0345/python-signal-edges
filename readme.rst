@@ -15,7 +15,7 @@ Find **Signal Edges** on `PyPi <https://pypi.org/project/python-signal-edges/>`_
 
     pip install python-signal-edges
 
-Refer to the documentation `here <https://python-signal-edges.netlify.app/>`_ for more details.
+Refer to the documentation `here <https://dmg0345-python-signal-edges.netlify.app/>`_ for more details.
 
 Development
 ------------------------------------------------------------------------------------------------------------------------
