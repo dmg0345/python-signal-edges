@@ -8,7 +8,7 @@ build-backend = "poetry.core.masonry.api"
 
 [tool.poetry]
 name = "python-signal-edges"
-version = "1.0.4"
+version = "1.0.5"
 description = "Extract state levels and edges from signals, among others"
 license = "MIT"
 authors = ["Diego Martinez <dmg0345@gmail.com>"]
